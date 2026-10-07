@@ -1,0 +1,19 @@
+# 数据目录
+mysql-data/
+redis-data/
+
+# 日志
+*.log
+logs/
+
+# 编译产物
+engine/release/
+*.o
+*.so
+
+# 系统文件
+.DS_Store
+*.swp
+
+# 环境配置
+.env

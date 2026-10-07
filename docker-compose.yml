@@ -1,0 +1,50 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mir2-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 88888888
+      MYSQL_DATABASE: database
+      TZ: Asia/Shanghai
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./database_full.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - mir2-net
+
+  redis:
+    image: redis:latest
+    container_name: mir2-redis
+    restart: always
+    networks:
+      - mir2-net
+
+  service:
+    build: ./service
+    container_name: mir2-service
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "7100:7100"
+    networks:
+      - mir2-net
+
+  engine:
+    build: ./engine
+    container_name: mir2-engine
+    restart: always
+    depends_on:
+      - service
+    ports:
+      - "7200:7200/udp"
+    networks:
+      - mir2-net
+
+networks:
+  mir2-net:
+    driver: bridge
